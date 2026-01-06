@@ -10,20 +10,20 @@ const nearbyCoords = (latOffset: number, lngOffset: number): Coordinates => ({
   lng: BASE_LNG + lngOffset,
 });
 
-// Pricing tiers
+// Pricing tiers (Tahoe pricing)
 export const pricingTiers: PricingTier[] = [
   {
     id: 'economy',
     name: 'Economy',
     description: 'Flexible timing - get cleared when we can',
-    price: 35,
-    originalPrice: 45,
-    discount: 22,
+    price: 200,
+    originalPrice: 275,
+    discount: 27,
     etaModifier: 2.0, // Double the wait time
     features: [
       'Cleared within 4-6 hours',
       'No guaranteed time slot',
-      'Save $10 per service',
+      'Save $75 per service',
       'Perfect for work-from-home days',
     ],
   },
@@ -31,7 +31,7 @@ export const pricingTiers: PricingTier[] = [
     id: 'standard',
     name: 'Standard',
     description: 'Regular service at normal priority',
-    price: 45,
+    price: 275,
     etaModifier: 1.0, // Normal wait time
     features: [
       'Cleared within 2-3 hours',
@@ -44,9 +44,9 @@ export const pricingTiers: PricingTier[] = [
     id: 'priority',
     name: 'Priority',
     description: 'Skip the line - first to be cleared',
-    price: 75,
-    originalPrice: 45,
-    surcharge: 67,
+    price: 450,
+    originalPrice: 275,
+    surcharge: 64,
     etaModifier: 0.3, // Much faster
     features: [
       'Cleared within 30-60 minutes',
@@ -261,7 +261,7 @@ export const mockJobs: Job[] = [
     notes: 'Regular driveway',
     priority: 'normal',
     priorityTier: 'standard',
-    price: 45,
+    price: 275,
   },
   {
     id: 'job-002',
@@ -279,7 +279,7 @@ export const mockJobs: Job[] = [
     notes: 'Long driveway with turnaround',
     priority: 'normal',
     priorityTier: 'priority',
-    price: 75,
+    price: 450,
   },
   {
     id: 'job-003',
@@ -297,7 +297,7 @@ export const mockJobs: Job[] = [
     notes: 'Corner lot - extra sidewalk',
     priority: 'normal',
     priorityTier: 'standard',
-    price: 45,
+    price: 275,
   },
   {
     id: 'job-004',
@@ -315,7 +315,7 @@ export const mockJobs: Job[] = [
     notes: '',
     priority: 'normal',
     priorityTier: 'standard',
-    price: 45,
+    price: 275,
   },
   {
     id: 'job-005',
@@ -333,7 +333,7 @@ export const mockJobs: Job[] = [
     notes: '',
     priority: 'normal',
     priorityTier: 'economy',
-    price: 35,
+    price: 200,
   },
   {
     id: 'job-006',
@@ -351,7 +351,7 @@ export const mockJobs: Job[] = [
     notes: 'Has basketball hoop - be careful',
     priority: 'high',
     priorityTier: 'priority',
-    price: 75,
+    price: 450,
   },
   {
     id: 'job-007',
@@ -369,7 +369,7 @@ export const mockJobs: Job[] = [
     notes: '',
     priority: 'normal',
     priorityTier: 'standard',
-    price: 45,
+    price: 275,
   },
   {
     id: 'job-008',
@@ -387,7 +387,7 @@ export const mockJobs: Job[] = [
     notes: 'Elderly homeowner - extra care',
     priority: 'urgent',
     priorityTier: 'priority',
-    price: 75,
+    price: 450,
   },
 ];
 

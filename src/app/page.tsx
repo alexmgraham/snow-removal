@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useBranding } from '@/context/BrandingContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Snowflake, User, Truck, Building2, ArrowRight } from 'lucide-react';
 import { useEffect } from 'react';
@@ -10,6 +11,7 @@ import type { UserRole } from '@/types';
 export default function LandingPage() {
   const router = useRouter();
   const { setRole, isAuthenticated, role } = useAuth();
+  const { branding } = useBranding();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -38,11 +40,19 @@ export default function LandingPage() {
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-12">
         {/* Logo and Header */}
         <div className="text-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-[var(--color-navy)] shadow-xl mb-6">
-            <Snowflake className="w-10 h-10 text-white" strokeWidth={1.5} />
-          </div>
+          {branding.logoUrl ? (
+            <img 
+              src={branding.logoUrl} 
+              alt={branding.companyName} 
+              className="w-20 h-20 object-contain rounded-2xl shadow-xl mb-6 mx-auto"
+            />
+          ) : (
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-[var(--color-teal)] shadow-xl mb-6">
+              <Snowflake className="w-10 h-10 text-white" strokeWidth={1.5} />
+            </div>
+          )}
           <h1 className="text-5xl md:text-6xl font-bold text-[var(--color-deep-navy)] tracking-tight mb-3">
-            SnowClear
+            {branding.companyName}
           </h1>
           <p className="text-xl text-[var(--color-muted-foreground)] max-w-md mx-auto">
             Smart snow removal tracking for modern neighborhoods

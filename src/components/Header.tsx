@@ -2,14 +2,17 @@
 
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useBranding } from '@/context/BrandingContext';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Snowflake, LogOut, User, Truck, Building2 } from 'lucide-react';
+import { Snowflake, LogOut, User, Truck, Building2, Palette } from 'lucide-react';
 import NotificationCenter from '@/components/communication/NotificationCenter';
+import Link from 'next/link';
 
 export default function Header() {
   const router = useRouter();
   const { role, currentCustomer, currentOperator, logout } = useAuth();
+  const { branding } = useBranding();
 
   const handleLogout = () => {
     logout();
@@ -90,11 +93,19 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-[var(--color-navy)] flex items-center justify-center">
-              <Snowflake className="w-5 h-5 text-white" strokeWidth={1.5} />
-            </div>
+            {branding.logoUrl ? (
+              <img 
+                src={branding.logoUrl} 
+                alt={branding.companyName} 
+                className="w-9 h-9 object-contain rounded-lg"
+              />
+            ) : (
+              <div className="w-9 h-9 rounded-lg bg-[var(--color-teal)] flex items-center justify-center">
+                <Snowflake className="w-5 h-5 text-white" strokeWidth={1.5} />
+              </div>
+            )}
             <span className="text-xl font-semibold text-[var(--color-deep-navy)]">
-              SnowClear
+              {branding.companyName}
             </span>
           </div>
 
@@ -110,6 +121,17 @@ export default function Header() {
               {getRoleIcon()}
               {getRoleLabel()}
             </div>
+
+            {/* Branding Link (Owner only) */}
+            {role === 'owner' && (
+              <Link
+                href="/owner/branding"
+                className="p-2 rounded-lg text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-secondary)] transition-colors"
+                title="Branding Settings"
+              >
+                <Palette className="w-5 h-5" />
+              </Link>
+            )}
 
             {/* Notifications */}
             <NotificationCenter />

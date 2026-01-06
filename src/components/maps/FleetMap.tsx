@@ -5,7 +5,12 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import type { Operator, Job, Coordinates } from '@/types';
 import { MAP_CENTER, MAP_ZOOM, getCustomerById } from '@/lib/mock-data';
+import { useTheme } from '@/context/ThemeContext';
 import 'leaflet/dist/leaflet.css';
+
+// Map tile URLs
+const LIGHT_TILES = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+const DARK_TILES = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
 
 // Create operator marker icon
 const createOperatorIcon = (status: Operator['status'], isSelected: boolean) => {
@@ -112,6 +117,9 @@ export default function FleetMap({
   onOperatorSelect,
   className = '',
 }: FleetMapProps) {
+  const { theme } = useTheme();
+  const tileUrl = theme === 'dark' ? DARK_TILES : LIGHT_TILES;
+  
   return (
     <div className={`rounded-xl overflow-hidden shadow-lg ${className}`}>
       <MapContainer
@@ -122,7 +130,8 @@ export default function FleetMap({
         attributionControl={false}
       >
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          key={theme}
+          url={tileUrl}
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         />
         <MapController center={MAP_CENTER} zoom={MAP_ZOOM} />

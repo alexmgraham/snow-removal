@@ -5,7 +5,12 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-
 import L from 'leaflet';
 import type { Coordinates } from '@/types';
 import { MAP_CENTER, MAP_ZOOM } from '@/lib/mock-data';
+import { useTheme } from '@/context/ThemeContext';
 import 'leaflet/dist/leaflet.css';
+
+// Map tile URLs
+const LIGHT_TILES = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+const DARK_TILES = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
 
 // Custom icons
 const createIcon = (color: string, isHome: boolean = false) => {
@@ -52,6 +57,9 @@ export default function CustomerMap({
   operatorLocation,
   className = '',
 }: CustomerMapProps) {
+  const { theme } = useTheme();
+  const tileUrl = theme === 'dark' ? DARK_TILES : LIGHT_TILES;
+  
   // Use operator location directly from parent (which handles the simulation)
   const currentPlowPos = operatorLocation;
 
@@ -82,7 +90,8 @@ export default function CustomerMap({
         attributionControl={false}
       >
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          key={theme}
+          url={tileUrl}
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         />
         <MapController center={center} zoom={MAP_ZOOM} />

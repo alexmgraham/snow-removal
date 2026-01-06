@@ -5,7 +5,12 @@ import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-
 import L from 'leaflet';
 import type { Job, Coordinates } from '@/types';
 import { MAP_CENTER, MAP_ZOOM, getCustomerById } from '@/lib/mock-data';
+import { useTheme } from '@/context/ThemeContext';
 import 'leaflet/dist/leaflet.css';
+
+// Map tile URLs
+const LIGHT_TILES = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+const DARK_TILES = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
 
 // Create colored markers based on job status
 const createJobIcon = (status: Job['status']) => {
@@ -106,6 +111,9 @@ export default function OperatorMap({
   routePath = [],
   showRoute = true,
 }: OperatorMapProps) {
+  const { theme } = useTheme();
+  const tileUrl = theme === 'dark' ? DARK_TILES : LIGHT_TILES;
+  
   // Build route path from operator location through pending jobs
   const displayPath = useMemo(() => {
     if (routePath.length > 0) {
@@ -141,7 +149,8 @@ export default function OperatorMap({
         attributionControl={false}
       >
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          key={theme}
+          url={tileUrl}
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         />
         <MapController center={MAP_CENTER} zoom={MAP_ZOOM} />

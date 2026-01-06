@@ -13,7 +13,8 @@ import ForecastWidget from '@/components/weather/ForecastWidget';
 import AutoDispatchIndicator from '@/components/weather/AutoDispatchIndicator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Snowflake, Map, Users, DollarSign, TrendingUp, CloudSnow } from 'lucide-react';
+import { Snowflake, Map, Users, DollarSign, TrendingUp, CloudSnow, BarChart3, Palette, Truck, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import { 
   mockOperators, 
   mockJobs, 
@@ -126,6 +127,80 @@ export default function OwnerDashboard() {
             <AutoDispatchIndicator status={autoDispatch} compact />
             <WeatherCard weather={weather} compact />
           </div>
+        </div>
+
+        {/* Quick Navigation */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
+          <Link href="/owner/customers">
+            <Card className="glass border-[var(--color-border)] hover:border-[var(--color-teal)] transition-colors cursor-pointer group">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-[var(--color-teal)]/10 flex items-center justify-center group-hover:bg-[var(--color-teal)] transition-colors">
+                  <Users className="w-5 h-5 text-[var(--color-teal)] group-hover:text-white transition-colors" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-[var(--color-foreground)] text-sm">Customers</p>
+                  <p className="text-xs text-[var(--color-muted-foreground)]">Manage</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-[var(--color-muted-foreground)] group-hover:text-[var(--color-teal)] transition-colors" />
+              </CardContent>
+            </Card>
+          </Link>
+          <Link href="/owner/operators">
+            <Card className="glass border-[var(--color-border)] hover:border-[var(--color-amber)] transition-colors cursor-pointer group">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-[var(--color-amber)]/10 flex items-center justify-center group-hover:bg-[var(--color-amber)] transition-colors">
+                  <Truck className="w-5 h-5 text-[var(--color-amber)] group-hover:text-white transition-colors" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-[var(--color-foreground)] text-sm">Operators</p>
+                  <p className="text-xs text-[var(--color-muted-foreground)]">Manage</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-[var(--color-muted-foreground)] group-hover:text-[var(--color-amber)] transition-colors" />
+              </CardContent>
+            </Card>
+          </Link>
+          <Link href="/owner/reports">
+            <Card className="glass border-[var(--color-border)] hover:border-[var(--color-navy)] transition-colors cursor-pointer group">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-[var(--color-navy)]/10 flex items-center justify-center group-hover:bg-[var(--color-navy)] transition-colors">
+                  <BarChart3 className="w-5 h-5 text-[var(--color-navy)] group-hover:text-white transition-colors" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-[var(--color-foreground)] text-sm">Reports</p>
+                  <p className="text-xs text-[var(--color-muted-foreground)]">Analytics</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-[var(--color-muted-foreground)] group-hover:text-[var(--color-navy)] transition-colors" />
+              </CardContent>
+            </Card>
+          </Link>
+          <Link href="/owner/pricing">
+            <Card className="glass border-[var(--color-border)] hover:border-green-600 transition-colors cursor-pointer group">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center group-hover:bg-green-600 transition-colors">
+                  <DollarSign className="w-5 h-5 text-green-600 group-hover:text-white transition-colors" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-[var(--color-foreground)] text-sm">Pricing</p>
+                  <p className="text-xs text-[var(--color-muted-foreground)]">Configure</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-[var(--color-muted-foreground)] group-hover:text-green-600 transition-colors" />
+              </CardContent>
+            </Card>
+          </Link>
+          <Link href="/owner/branding">
+            <Card className="glass border-[var(--color-border)] hover:border-purple-600 transition-colors cursor-pointer group">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center group-hover:bg-purple-600 transition-colors">
+                  <Palette className="w-5 h-5 text-purple-600 group-hover:text-white transition-colors" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-[var(--color-foreground)] text-sm">Branding</p>
+                  <p className="text-xs text-[var(--color-muted-foreground)]">Customize</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-[var(--color-muted-foreground)] group-hover:text-purple-600 transition-colors" />
+              </CardContent>
+            </Card>
+          </Link>
         </div>
 
         {/* Stats Panel */}

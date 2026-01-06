@@ -112,3 +112,53 @@ export interface AppState {
   setRole: (role: UserRole | null) => void;
   logout: () => void;
 }
+
+// Subscription types
+export interface Subscription {
+  active: boolean;
+  plan: 'seasonal' | 'per-service';
+  seasonalPrice: number;
+  startDate: string;
+  endDate: string;
+}
+
+export interface CustomerWithSubscription extends Customer {
+  subscription?: Subscription;
+  totalSpent?: number;
+}
+
+// Service zone types
+export interface ServiceZone {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+// Extended operator with zone and schedule
+export interface OperatorWithSchedule extends Operator {
+  zoneId?: string;
+  schedule?: WeeklySchedule;
+}
+
+export interface WeeklySchedule {
+  monday: boolean;
+  tuesday: boolean;
+  wednesday: boolean;
+  thursday: boolean;
+  friday: boolean;
+  saturday: boolean;
+  sunday: boolean;
+}
+
+// Report types
+export interface DailyRevenue {
+  date: string;
+  revenue: number;
+  jobCount: number;
+}
+
+export interface TierRevenue {
+  tier: PriorityTier;
+  revenue: number;
+  jobCount: number;
+}

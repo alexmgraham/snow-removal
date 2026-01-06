@@ -3,9 +3,10 @@
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useBranding } from '@/context/BrandingContext';
+import { useTheme } from '@/context/ThemeContext';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Snowflake, LogOut, User, Truck, Building2, Palette } from 'lucide-react';
+import { Snowflake, LogOut, User, Truck, Building2, Palette, Sun, Moon } from 'lucide-react';
 import NotificationCenter from '@/components/communication/NotificationCenter';
 import Link from 'next/link';
 
@@ -13,6 +14,7 @@ export default function Header() {
   const router = useRouter();
   const { role, currentCustomer, currentOperator, logout } = useAuth();
   const { branding } = useBranding();
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   const handleLogout = () => {
     logout();
@@ -121,6 +123,19 @@ export default function Header() {
               {getRoleIcon()}
               {getRoleLabel()}
             </div>
+
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-secondary)] transition-colors"
+              title={resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {resolvedTheme === 'dark' ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
+            </button>
 
             {/* Branding Link (Owner only) */}
             {role === 'owner' && (

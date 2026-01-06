@@ -293,7 +293,7 @@ export default function ReportsPage() {
                         border: '1px solid var(--color-border)',
                         borderRadius: '8px',
                       }}
-                      formatter={(value: number) => [`$${value}`, 'Revenue']}
+                      formatter={(value) => [`$${value ?? 0}`, 'Revenue']}
                     />
                     <Line 
                       type="monotone" 
@@ -366,8 +366,8 @@ export default function ReportsPage() {
                         border: '1px solid var(--color-border)',
                         borderRadius: '8px',
                       }}
-                      formatter={(value: number, name: string) => [
-                        name === 'revenue' ? `$${value}` : value,
+                      formatter={(value, name) => [
+                        name === 'revenue' ? `$${value ?? 0}` : (value ?? 0),
                         name === 'revenue' ? 'Revenue' : 'Jobs'
                       ]}
                     />

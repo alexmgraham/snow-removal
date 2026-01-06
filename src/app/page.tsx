@@ -51,7 +51,7 @@ export default function LandingPage() {
               <Snowflake className="w-10 h-10 text-white" strokeWidth={1.5} />
             </div>
           )}
-          <h1 className="text-5xl md:text-6xl font-bold text-[var(--color-deep-navy)] tracking-tight mb-3">
+          <h1 className="text-5xl md:text-6xl font-bold text-[var(--color-foreground)] tracking-tight mb-3">
             {branding.companyName}
           </h1>
           <p className="text-xl text-[var(--color-muted-foreground)] max-w-md mx-auto">
@@ -70,7 +70,7 @@ export default function LandingPage() {
               <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--color-teal)] to-[var(--color-glacier)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                 <User className="w-7 h-7 text-white" strokeWidth={1.5} />
               </div>
-              <CardTitle className="text-2xl text-[var(--color-deep-navy)]">
+              <CardTitle className="text-2xl text-[var(--color-foreground)]">
                 I&apos;m a Customer
               </CardTitle>
               <CardDescription className="text-base">
@@ -108,7 +108,7 @@ export default function LandingPage() {
               <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--color-amber)] to-[var(--color-amber-bright)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                 <Truck className="w-7 h-7 text-white" strokeWidth={1.5} />
               </div>
-              <CardTitle className="text-2xl text-[var(--color-deep-navy)]">
+              <CardTitle className="text-2xl text-[var(--color-foreground)]">
                 I&apos;m an Operator
               </CardTitle>
               <CardDescription className="text-base">
@@ -146,7 +146,7 @@ export default function LandingPage() {
               <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--color-navy)] to-[var(--color-deep-navy)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                 <Building2 className="w-7 h-7 text-white" strokeWidth={1.5} />
               </div>
-              <CardTitle className="text-2xl text-[var(--color-deep-navy)]">
+              <CardTitle className="text-2xl text-[var(--color-foreground)]">
                 I&apos;m an Owner
               </CardTitle>
               <CardDescription className="text-base">
@@ -168,7 +168,7 @@ export default function LandingPage() {
                   Operator management
                 </li>
               </ul>
-              <div className="flex items-center gap-2 text-[var(--color-navy)] font-medium group-hover:gap-3 transition-all">
+              <div className="flex items-center gap-2 text-[var(--color-primary)] font-medium group-hover:gap-3 transition-all">
                 View Dashboard
                 <ArrowRight className="w-4 h-4" />
               </div>

@@ -292,7 +292,7 @@ export default function BrandingPage() {
                           <Snowflake className="w-5 h-5 text-white" strokeWidth={1.5} />
                         </div>
                       )}
-                      <span className="text-xl font-semibold text-[var(--color-deep-navy)]">
+                      <span className="text-xl font-semibold text-[var(--color-foreground)]">
                         {localBranding.companyName || 'Company Name'}
                       </span>
                     </div>

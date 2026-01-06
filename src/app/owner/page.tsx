@@ -37,7 +37,7 @@ const FleetMap = dynamic(() => import('@/components/maps/FleetMap'), {
   loading: () => (
     <div className="h-full w-full bg-[var(--color-secondary)] rounded-xl flex items-center justify-center">
       <div className="flex flex-col items-center gap-3">
-        <Snowflake className="w-8 h-8 text-[var(--color-navy)] animate-spin" />
+        <Snowflake className="w-8 h-8 text-[var(--color-primary)] animate-spin" />
         <span className="text-sm text-[var(--color-muted-foreground)]">Loading map...</span>
       </div>
     </div>
@@ -160,44 +160,44 @@ export default function OwnerDashboard() {
             </Card>
           </Link>
           <Link href="/owner/reports">
-            <Card className="glass border-[var(--color-border)] hover:border-[var(--color-navy)] transition-colors cursor-pointer group">
+            <Card className="glass border-[var(--color-border)] hover:border-[var(--color-primary)] transition-colors cursor-pointer group">
               <CardContent className="p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[var(--color-navy)]/10 flex items-center justify-center group-hover:bg-[var(--color-navy)] transition-colors">
-                  <BarChart3 className="w-5 h-5 text-[var(--color-navy)] group-hover:text-white transition-colors" />
+                <div className="w-10 h-10 rounded-lg bg-[var(--color-primary)]/10 flex items-center justify-center group-hover:bg-[var(--color-primary)] transition-colors">
+                  <BarChart3 className="w-5 h-5 text-[var(--color-primary)] group-hover:text-white transition-colors" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-[var(--color-foreground)] text-sm">Reports</p>
                   <p className="text-xs text-[var(--color-muted-foreground)]">Analytics</p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-[var(--color-muted-foreground)] group-hover:text-[var(--color-navy)] transition-colors" />
+                <ArrowRight className="w-4 h-4 text-[var(--color-muted-foreground)] group-hover:text-[var(--color-primary)] transition-colors" />
               </CardContent>
             </Card>
           </Link>
           <Link href="/owner/pricing">
-            <Card className="glass border-[var(--color-border)] hover:border-green-600 transition-colors cursor-pointer group">
+            <Card className="glass border-[var(--color-border)] hover:border-emerald-500 transition-colors cursor-pointer group">
               <CardContent className="p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center group-hover:bg-green-600 transition-colors">
-                  <DollarSign className="w-5 h-5 text-green-600 group-hover:text-white transition-colors" />
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/15 flex items-center justify-center group-hover:bg-emerald-500 transition-colors">
+                  <DollarSign className="w-5 h-5 text-emerald-500 group-hover:text-white transition-colors" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-[var(--color-foreground)] text-sm">Pricing</p>
                   <p className="text-xs text-[var(--color-muted-foreground)]">Configure</p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-[var(--color-muted-foreground)] group-hover:text-green-600 transition-colors" />
+                <ArrowRight className="w-4 h-4 text-[var(--color-muted-foreground)] group-hover:text-emerald-500 transition-colors" />
               </CardContent>
             </Card>
           </Link>
           <Link href="/owner/branding">
-            <Card className="glass border-[var(--color-border)] hover:border-purple-600 transition-colors cursor-pointer group">
+            <Card className="glass border-[var(--color-border)] hover:border-violet-500 transition-colors cursor-pointer group">
               <CardContent className="p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center group-hover:bg-purple-600 transition-colors">
-                  <Palette className="w-5 h-5 text-purple-600 group-hover:text-white transition-colors" />
+                <div className="w-10 h-10 rounded-lg bg-violet-500/15 flex items-center justify-center group-hover:bg-violet-500 transition-colors">
+                  <Palette className="w-5 h-5 text-violet-500 group-hover:text-white transition-colors" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-[var(--color-foreground)] text-sm">Branding</p>
                   <p className="text-xs text-[var(--color-muted-foreground)]">Customize</p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-[var(--color-muted-foreground)] group-hover:text-purple-600 transition-colors" />
+                <ArrowRight className="w-4 h-4 text-[var(--color-muted-foreground)] group-hover:text-violet-500 transition-colors" />
               </CardContent>
             </Card>
           </Link>
@@ -214,7 +214,7 @@ export default function OwnerDashboard() {
             <Card className="glass border-[var(--color-border)]">
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                  <Map className="w-5 h-5 text-[var(--color-navy)]" />
+                  <Map className="w-5 h-5 text-[var(--color-primary)]" />
                   Live Fleet Map
                 </CardTitle>
               </CardHeader>

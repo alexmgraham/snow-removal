@@ -83,7 +83,7 @@ export default function Header() {
       case 'operator':
         return 'bg-[var(--color-amber)]/10 text-[var(--color-amber)]';
       case 'owner':
-        return 'bg-[var(--color-navy)]/10 text-[var(--color-navy)]';
+        return 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]';
       default:
         return '';
     }
@@ -106,7 +106,7 @@ export default function Header() {
                 <Snowflake className="w-5 h-5 text-white" strokeWidth={1.5} />
               </div>
             )}
-            <span className="text-xl font-semibold text-[var(--color-deep-navy)]">
+            <span className="text-xl font-semibold text-[var(--color-foreground)]">
               {branding.companyName}
             </span>
           </div>

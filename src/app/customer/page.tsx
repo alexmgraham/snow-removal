@@ -44,6 +44,11 @@ export default function CustomerDashboard() {
   const [job, setJob] = useState<Job | null>(null);
   const [operator, setOperator] = useState<Operator | null>(null);
   const [showPrioritySelector, setShowPrioritySelector] = useState(false);
+  
+  // Weather data
+  const weather = getCurrentWeather();
+  const stormAlerts = getStormAlerts();
+  const forecast = getForecast();
 
   // Redirect if not authenticated or wrong role
   useEffect(() => {

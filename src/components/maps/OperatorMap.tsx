@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-leaflet';
 import L from 'leaflet';
 import type { Job, Coordinates } from '@/types';
 import { MAP_CENTER, MAP_ZOOM, getCustomerById } from '@/lib/mock-data';
@@ -93,6 +93,8 @@ interface OperatorMapProps {
   selectedJobId?: string | null;
   onJobSelect?: (jobId: string) => void;
   className?: string;
+  routePath?: Coordinates[]; // Optimized route path
+  showRoute?: boolean;
 }
 
 export default function OperatorMap({
@@ -101,7 +103,34 @@ export default function OperatorMap({
   selectedJobId,
   onJobSelect,
   className = '',
+  routePath = [],
+  showRoute = true,
 }: OperatorMapProps) {
+  // Build route path from operator location through pending jobs
+  const displayPath = useMemo(() => {
+    if (routePath.length > 0) {
+      return routePath.map((coord) => [coord.lat, coord.lng] as [number, number]);
+    }
+    
+    // Default: build path from pending jobs in order
+    if (!showRoute) return [];
+    
+    const pendingJobs = jobs
+      .filter((j) => j.status === 'pending' || j.status === 'en_route' || j.status === 'in_progress')
+      .sort((a, b) => {
+        // Put in_progress first, then en_route, then pending
+        const statusOrder = { in_progress: 0, en_route: 1, pending: 2 };
+        return (statusOrder[a.status as keyof typeof statusOrder] || 2) - 
+               (statusOrder[b.status as keyof typeof statusOrder] || 2);
+      });
+    
+    const path: [number, number][] = [[operatorLocation.lat, operatorLocation.lng]];
+    pendingJobs.forEach((job) => {
+      path.push([job.coordinates.lat, job.coordinates.lng]);
+    });
+    return path;
+  }, [routePath, jobs, operatorLocation, showRoute]);
+
   return (
     <div className={`rounded-xl overflow-hidden shadow-lg ${className}`}>
       <MapContainer
@@ -116,6 +145,21 @@ export default function OperatorMap({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         />
         <MapController center={MAP_CENTER} zoom={MAP_ZOOM} />
+
+        {/* Route Polyline */}
+        {showRoute && displayPath.length > 1 && (
+          <Polyline
+            positions={displayPath}
+            pathOptions={{
+              color: '#0891b2',
+              weight: 4,
+              opacity: 0.7,
+              dashArray: '10, 10',
+              lineCap: 'round',
+              lineJoin: 'round',
+            }}
+          />
+        )}
 
         {/* Job markers */}
         {jobs.map((job) => {

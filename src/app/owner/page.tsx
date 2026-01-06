@@ -7,9 +7,13 @@ import { useAuth } from '@/context/AuthContext';
 import Header from '@/components/Header';
 import FleetStatsPanel from '@/components/owner/FleetStatsPanel';
 import OperatorCard from '@/components/owner/OperatorCard';
+import WeatherCard from '@/components/weather/WeatherCard';
+import StormAlert from '@/components/weather/StormAlert';
+import ForecastWidget from '@/components/weather/ForecastWidget';
+import AutoDispatchIndicator from '@/components/weather/AutoDispatchIndicator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Snowflake, Map, Users, DollarSign, TrendingUp } from 'lucide-react';
+import { Snowflake, Map, Users, DollarSign, TrendingUp, CloudSnow } from 'lucide-react';
 import { 
   mockOperators, 
   mockJobs, 
@@ -18,6 +22,12 @@ import {
   getCustomerById,
   pricingTiers,
 } from '@/lib/mock-data';
+import { 
+  getCurrentWeather, 
+  getStormAlerts, 
+  getForecast, 
+  getAutoDispatchStatus 
+} from '@/lib/weather-data';
 import type { FleetStats, Job } from '@/types';
 
 // Dynamic import for the map
@@ -38,6 +48,12 @@ export default function OwnerDashboard() {
   const { role, isAuthenticated } = useAuth();
   const [selectedOperatorId, setSelectedOperatorId] = useState<string | null>(null);
   const [stats, setStats] = useState<FleetStats | null>(null);
+
+  // Weather data
+  const weather = getCurrentWeather();
+  const stormAlerts = getStormAlerts();
+  const forecast = getForecast();
+  const autoDispatch = getAutoDispatchStatus();
 
   // Redirect if not authenticated or wrong role
   useEffect(() => {
@@ -89,14 +105,27 @@ export default function OwnerDashboard() {
       <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Storm Alerts */}
+        {stormAlerts.length > 0 && (
+          <div className="mb-6">
+            <StormAlert alerts={stormAlerts} dismissible={false} />
+          </div>
+        )}
+
         {/* Welcome Section */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-[var(--color-foreground)]">
-            Fleet Overview
-          </h1>
-          <p className="text-[var(--color-muted-foreground)] mt-1">
-            {today} • Real-time fleet status and performance
-          </p>
+        <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-[var(--color-foreground)]">
+              Fleet Overview
+            </h1>
+            <p className="text-[var(--color-muted-foreground)] mt-1">
+              {today} • Real-time fleet status and performance
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <AutoDispatchIndicator status={autoDispatch} compact />
+            <WeatherCard weather={weather} compact />
+          </div>
         </div>
 
         {/* Stats Panel */}
@@ -240,6 +269,22 @@ export default function OwnerDashboard() {
                     onSelect={handleOperatorSelect}
                   />
                 ))}
+              </CardContent>
+            </Card>
+
+            {/* Auto-Dispatch Status */}
+            <AutoDispatchIndicator status={autoDispatch} />
+
+            {/* Weather Forecast */}
+            <Card className="glass border-[var(--color-border)]">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                  <CloudSnow className="w-5 h-5 text-[var(--color-teal)]" />
+                  Weather Outlook
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ForecastWidget forecast={forecast} compact />
               </CardContent>
             </Card>
 

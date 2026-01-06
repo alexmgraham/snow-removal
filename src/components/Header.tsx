@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Snowflake, LogOut, User, Truck, Building2 } from 'lucide-react';
+import NotificationCenter from '@/components/communication/NotificationCenter';
 
 export default function Header() {
   const router = useRouter();
@@ -109,6 +110,9 @@ export default function Header() {
               {getRoleIcon()}
               {getRoleLabel()}
             </div>
+
+            {/* Notifications */}
+            <NotificationCenter />
 
             {/* User Info */}
             <div className="flex items-center gap-3">

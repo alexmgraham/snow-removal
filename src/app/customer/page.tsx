@@ -14,7 +14,7 @@ import ForecastWidget from '@/components/weather/ForecastWidget';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Calendar, Snowflake, Settings2 } from 'lucide-react';
+import { MapPin, Calendar, Snowflake, Settings2, Home, MessageCircle, Camera } from 'lucide-react';
 import { 
   mockJobs, 
   mockOperators, 
@@ -23,7 +23,12 @@ import {
   pricingTiers,
 } from '@/lib/mock-data';
 import { getCurrentWeather, getStormAlerts, getForecast } from '@/lib/weather-data';
+import { getPropertyDetails } from '@/lib/property-data';
+import PropertyDetails from '@/components/job/PropertyDetails';
+import ChatWindow from '@/components/communication/ChatWindow';
+import PhotoUpload from '@/components/communication/PhotoUpload';
 import type { Job, Operator, ETAEstimate, PriorityTier } from '@/types';
+import type { PropertyDetails as PropertyDetailsType } from '@/types/property';
 
 // Dynamic import for the map to avoid SSR issues with Leaflet
 const CustomerMap = dynamic(() => import('@/components/maps/CustomerMap'), {
@@ -44,11 +49,16 @@ export default function CustomerDashboard() {
   const [job, setJob] = useState<Job | null>(null);
   const [operator, setOperator] = useState<Operator | null>(null);
   const [showPrioritySelector, setShowPrioritySelector] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [chatMinimized, setChatMinimized] = useState(false);
   
   // Weather data
   const weather = getCurrentWeather();
   const stormAlerts = getStormAlerts();
   const forecast = getForecast();
+
+  // Property details
+  const property = currentCustomer ? getPropertyDetails(currentCustomer.id) : undefined;
 
   // Redirect if not authenticated or wrong role
   useEffect(() => {
@@ -158,15 +168,25 @@ export default function CustomerDashboard() {
       <Header />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Storm Alerts */}
+        {stormAlerts.length > 0 && (
+          <div className="mb-6">
+            <StormAlert alerts={stormAlerts} />
+          </div>
+        )}
+
         {/* Welcome Section */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-[var(--color-foreground)]">
-            Welcome back, {currentCustomer.name.split(' ')[0]}!
-          </h1>
-          <p className="text-[var(--color-muted-foreground)] flex items-center gap-2 mt-1">
-            <Calendar className="w-4 h-4" />
-            {today}
-          </p>
+        <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-[var(--color-foreground)]">
+              Welcome back, {currentCustomer.name.split(' ')[0]}!
+            </h1>
+            <p className="text-[var(--color-muted-foreground)] flex items-center gap-2 mt-1">
+              <Calendar className="w-4 h-4" />
+              {today}
+            </p>
+          </div>
+          <WeatherCard weather={weather} compact />
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
@@ -224,6 +244,11 @@ export default function CustomerDashboard() {
                 onTierChange={handleTierChange}
                 baseETA={baseETA}
               />
+            )}
+
+            {/* Property Details */}
+            {property && (
+              <PropertyDetails property={property} compact showPhotos />
             )}
           </div>
 
@@ -287,27 +312,48 @@ export default function CustomerDashboard() {
             {/* Status Timeline */}
             {job && <StatusTimeline currentStatus={job.status} />}
 
-            {/* Weather Note */}
-            <Card className="glass border-[var(--color-border)]">
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-frost)] to-[var(--color-ice)] flex items-center justify-center flex-shrink-0">
-                    <Snowflake className="w-5 h-5 text-[var(--color-navy)]" />
+            {/* Contact Operator */}
+            {job && operator && (
+              <Card className="glass border-[var(--color-border)]">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-medium text-[var(--color-muted-foreground)]">
+                      Need to contact {operator.name.split(' ')[0]}?
+                    </span>
                   </div>
-                  <div>
-                    <p className="font-medium text-[var(--color-foreground)] text-sm">
-                      Winter Storm Advisory
-                    </p>
-                    <p className="text-xs text-[var(--color-muted-foreground)] mt-0.5">
-                      Heavy snowfall expected. Service times may be adjusted.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                  <Button
+                    className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/90"
+                    onClick={() => setShowChat(true)}
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Open Chat
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Completion Photos (show if job is completed or in progress) */}
+            {job && (job.status === 'completed' || job.status === 'in_progress') && (
+              <PhotoUpload jobId={job.id} readOnly />
+            )}
+
+            {/* Weather Forecast */}
+            <ForecastWidget forecast={forecast} compact />
           </div>
         </div>
       </main>
+
+      {/* Chat Window */}
+      {showChat && operator && job && (
+        <ChatWindow
+          jobId={job.id}
+          recipientName={operator.name}
+          recipientAvatar={operator.avatarUrl}
+          onClose={() => setShowChat(false)}
+          minimized={chatMinimized}
+          onToggleMinimize={() => setChatMinimized(!chatMinimized)}
+        />
+      )}
     </div>
   );
 }

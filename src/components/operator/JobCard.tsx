@@ -4,8 +4,12 @@ import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Play, Square, Check, MapPin, Clock, AlertTriangle, ChevronRight } from 'lucide-react';
+import { Play, Square, Check, MapPin, Clock, AlertTriangle, ChevronRight, ChevronDown, ChevronUp, Home, Ruler, Snowflake } from 'lucide-react';
 import type { Job, Customer } from '@/types';
+import type { PropertyDetails } from '@/types/property';
+import { getPropertyDetails, getDifficultyLabel, getDifficultyColor, formatSaltPreference, formatPileLocation, formatObstacleType } from '@/lib/property-data';
+import PropertyPhotos from '@/components/job/PropertyPhotos';
+import SpecialInstructions from '@/components/job/SpecialInstructions';
 
 interface JobCardProps {
   job: Job;
@@ -26,6 +30,10 @@ export default function JobCard({
 }: JobCardProps) {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+  
+  // Get property details for this customer
+  const property = job.customerId ? getPropertyDetails(job.customerId) : undefined;
 
   // Timer logic
   useEffect(() => {
@@ -105,6 +113,12 @@ export default function JobCard({
                 {job.status === 'in_progress' ? 'Clearing' : job.status.replace('_', ' ')}
               </Badge>
 
+              {property && (
+                <Badge className={`${getDifficultyColor(property.difficultyRating)} text-xs`}>
+                  {getDifficultyLabel(property.difficultyRating)}
+                </Badge>
+              )}
+
               {job.status === 'completed' && job.actualDuration && (
                 <span className="text-xs text-[var(--color-muted-foreground)] flex items-center gap-1">
                   <Clock className="w-3 h-3" />
@@ -112,9 +126,10 @@ export default function JobCard({
                 </span>
               )}
 
-              {job.notes && (
-                <span className="text-xs text-[var(--color-muted-foreground)] italic truncate max-w-[150px]">
-                  {job.notes}
+              {property && (
+                <span className="text-xs text-[var(--color-muted-foreground)] flex items-center gap-1">
+                  <Ruler className="w-3 h-3" />
+                  {property.dimensions.area} sq ft
                 </span>
               )}
             </div>
@@ -178,11 +193,87 @@ export default function JobCard({
               </div>
             )}
 
-            {(job.status === 'pending' || job.status === 'en_route') && (
-              <ChevronRight className="w-5 h-5 text-[var(--color-muted-foreground)]" />
+            {property && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 px-2 text-[var(--color-muted-foreground)]"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowDetails(!showDetails);
+                }}
+              >
+                {showDetails ? (
+                  <ChevronUp className="w-4 h-4" />
+                ) : (
+                  <ChevronDown className="w-4 h-4" />
+                )}
+              </Button>
             )}
           </div>
         </div>
+
+        {/* Expandable Property Details */}
+        {showDetails && property && (
+          <div className="mt-4 pt-4 border-t border-[var(--color-border)] space-y-3">
+            {/* Quick Info Row */}
+            <div className="grid grid-cols-3 gap-2 text-sm">
+              <div className="p-2 rounded bg-[var(--color-secondary)]/50">
+                <div className="text-xs text-[var(--color-muted-foreground)]">Type</div>
+                <div className="font-medium capitalize">{property.drivewayType}</div>
+              </div>
+              <div className="p-2 rounded bg-[var(--color-secondary)]/50">
+                <div className="text-xs text-[var(--color-muted-foreground)]">Est. Time</div>
+                <div className="font-medium">{property.estimatedClearTime} min</div>
+              </div>
+              <div className="p-2 rounded bg-[var(--color-secondary)]/50">
+                <div className="text-xs text-[var(--color-muted-foreground)]">Salt</div>
+                <div className="font-medium text-xs">{formatSaltPreference(property.preferences.saltUsage)}</div>
+              </div>
+            </div>
+
+            {/* Pile Location */}
+            <div className="flex items-center gap-2 text-sm p-2 rounded bg-[var(--color-teal)]/10">
+              <MapPin className="w-4 h-4 text-[var(--color-teal)]" />
+              <span>
+                Pile snow: <strong>{formatPileLocation(property.preferences.pileLocation, property.preferences.customPileLocation)}</strong>
+              </span>
+            </div>
+
+            {/* Obstacles */}
+            {property.obstacles.length > 0 && (
+              <div className="space-y-1">
+                <div className="text-xs font-medium flex items-center gap-1 text-amber-600">
+                  <AlertTriangle className="w-3 h-3" />
+                  Watch for:
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {property.obstacles.map((obs) => (
+                    <Badge key={obs.id} variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200">
+                      {formatObstacleType(obs.type)} ({obs.location})
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Special Instructions */}
+            {(property.preferences.specialInstructions || property.access.accessNotes || property.notes) && (
+              <SpecialInstructions
+                specialInstructions={property.preferences.specialInstructions}
+                accessNotes={property.access.accessNotes}
+                notes={property.notes}
+                gateCode={property.access.gateCode}
+                compact
+              />
+            )}
+
+            {/* Photos */}
+            {property.photos.length > 0 && (
+              <PropertyPhotos photos={property.photos} compact />
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

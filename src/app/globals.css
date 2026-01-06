@@ -215,6 +215,7 @@
 .leaflet-container {
   font-family: 'Outfit', system-ui, sans-serif;
   border-radius: var(--radius-lg);
+  z-index: 10 !important;
 }
 
 .leaflet-popup-content-wrapper {
@@ -224,4 +225,13 @@
 
 .leaflet-popup-content {
   margin: 12px 16px;
+}
+
+/* Ensure header elements stay above map */
+.notification-panel {
+  z-index: 1000 !important;
+}
+
+.notification-backdrop {
+  z-index: 999 !important;
 }

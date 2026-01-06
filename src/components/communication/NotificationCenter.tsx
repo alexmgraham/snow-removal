@@ -77,12 +77,12 @@ export default function NotificationCenter({ onNotificationClick }: Notification
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-[999] notification-backdrop"
             onClick={() => setIsOpen(false)}
           />
 
           {/* Panel */}
-          <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 border border-[var(--color-border)] rounded-xl shadow-xl z-50 overflow-hidden">
+          <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 border border-[var(--color-border)] rounded-xl shadow-xl z-[1000] notification-panel overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between p-3 border-b border-[var(--color-border)] bg-slate-50 dark:bg-slate-800/50">
               <div className="flex items-center gap-2">

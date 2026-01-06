@@ -71,6 +71,9 @@ export default function CustomerDashboard() {
     }
   }, [isAuthenticated, role, router]);
 
+  // Simulated operator position (for live tracking demo)
+  const [simulatedOperatorPos, setSimulatedOperatorPos] = useState<{ lat: number; lng: number } | null>(null);
+
   // Load job and operator data
   useEffect(() => {
     if (currentCustomer) {
@@ -81,11 +84,42 @@ export default function CustomerDashboard() {
           const jobOperator = mockOperators.find((o) => o.id === customerJob.operatorId);
           if (jobOperator) {
             setOperator(jobOperator);
+            setSimulatedOperatorPos(jobOperator.currentLocation);
           }
         }
       }
     }
   }, [currentCustomer]);
+
+  // Simulate plow moving closer to customer over time
+  useEffect(() => {
+    if (!operator || !currentCustomer || !simulatedOperatorPos) return;
+
+    const destination = currentCustomer.coordinates;
+    
+    const interval = setInterval(() => {
+      setSimulatedOperatorPos((currentPos) => {
+        if (!currentPos) return currentPos;
+        
+        // Calculate direction toward customer
+        const dx = destination.lat - currentPos.lat;
+        const dy = destination.lng - currentPos.lng;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        // Stop if very close
+        if (distance < 0.0005) return currentPos;
+        
+        // Move ~2% closer each tick (simulates realistic movement)
+        const speed = 0.02;
+        return {
+          lat: currentPos.lat + dx * speed,
+          lng: currentPos.lng + dy * speed,
+        };
+      });
+    }, 3000); // Update every 3 seconds for visible progress
+
+    return () => clearInterval(interval);
+  }, [operator, currentCustomer, simulatedOperatorPos]);
 
   // Handle priority tier change
   const handleTierChange = useCallback((newTier: PriorityTier, newPrice: number) => {
@@ -99,9 +133,9 @@ export default function CustomerDashboard() {
     }
   }, [job]);
 
-  // Calculate ETA
+  // Calculate ETA using simulated position
   const eta: ETAEstimate | null = useMemo(() => {
-    if (!job || !operator || !currentCustomer) return null;
+    if (!job || !operator || !currentCustomer || !simulatedOperatorPos) return null;
     
     // Count jobs ahead in queue
     const operatorJobs = mockJobs.filter((j) => j.operatorId === operator.id);
@@ -111,7 +145,7 @@ export default function CustomerDashboard() {
     ).length;
 
     const { minutes: baseMinutes, distance } = calculateETA(
-      operator.currentLocation,
+      simulatedOperatorPos,
       currentCustomer.coordinates,
       jobsAhead
     );
@@ -130,11 +164,11 @@ export default function CustomerDashboard() {
       distance,
       jobsAhead,
     };
-  }, [job, operator, currentCustomer]);
+  }, [job, operator, currentCustomer, simulatedOperatorPos]);
 
   // Get base ETA for priority selector
   const baseETA = useMemo(() => {
-    if (!job || !operator || !currentCustomer) return 60;
+    if (!job || !operator || !currentCustomer || !simulatedOperatorPos) return 60;
     
     const operatorJobs = mockJobs.filter((j) => j.operatorId === operator.id);
     const jobsAhead = operatorJobs.filter(
@@ -143,13 +177,13 @@ export default function CustomerDashboard() {
     ).length;
 
     const { minutes } = calculateETA(
-      operator.currentLocation,
+      simulatedOperatorPos,
       currentCustomer.coordinates,
       jobsAhead
     );
 
     return minutes;
-  }, [job, operator, currentCustomer]);
+  }, [job, operator, currentCustomer, simulatedOperatorPos]);
 
   if (!isAuthenticated || role !== 'customer' || !currentCustomer) {
     return null;
@@ -194,10 +228,10 @@ export default function CustomerDashboard() {
           <div className="lg:col-span-2 space-y-6">
             {/* Map */}
             <div className="h-[400px] md:h-[500px]">
-              {operator && (
+              {operator && simulatedOperatorPos && (
                 <CustomerMap
                   homeLocation={currentCustomer.coordinates}
-                  operatorLocation={operator.currentLocation}
+                  operatorLocation={simulatedOperatorPos}
                   className="h-full"
                 />
               )}

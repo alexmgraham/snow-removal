@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import type { Coordinates } from '@/types';
-import { MAP_CENTER, MAP_ZOOM, generatePlowRoute } from '@/lib/mock-data';
+import { MAP_CENTER, MAP_ZOOM } from '@/lib/mock-data';
 import 'leaflet/dist/leaflet.css';
 
 // Custom icons
@@ -52,30 +52,8 @@ export default function CustomerMap({
   operatorLocation,
   className = '',
 }: CustomerMapProps) {
-  const [currentPlowPos, setCurrentPlowPos] = useState<Coordinates>(operatorLocation);
-  const [routeIndex, setRouteIndex] = useState(0);
-
-  // Generate route from operator to home
-  const route = useMemo(
-    () => generatePlowRoute(operatorLocation, homeLocation, 30),
-    [operatorLocation, homeLocation]
-  );
-
-  // Animate plow movement
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRouteIndex((prev) => {
-        const next = prev + 1;
-        if (next >= route.length) {
-          return 0; // Loop back
-        }
-        setCurrentPlowPos(route[next].coordinates);
-        return next;
-      });
-    }, 2000); // Move every 2 seconds
-
-    return () => clearInterval(interval);
-  }, [route]);
+  // Use operator location directly from parent (which handles the simulation)
+  const currentPlowPos = operatorLocation;
 
   // Calculate center between home and plow
   const center = useMemo(
@@ -86,8 +64,13 @@ export default function CustomerMap({
     [homeLocation, currentPlowPos]
   );
 
-  // Route line coordinates
-  const routeLine = route.slice(routeIndex).map((p) => [p.coordinates.lat, p.coordinates.lng] as [number, number]);
+  // Generate route line from current plow position to home
+  const routeLine = useMemo(() => {
+    return [
+      [currentPlowPos.lat, currentPlowPos.lng] as [number, number],
+      [homeLocation.lat, homeLocation.lng] as [number, number],
+    ];
+  }, [currentPlowPos, homeLocation]);
 
   return (
     <div className={`rounded-xl overflow-hidden shadow-lg ${className}`}>

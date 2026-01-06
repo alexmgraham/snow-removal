@@ -43,7 +43,7 @@ export default function JobCard({
 
       const interval = setInterval(() => {
         const now = Date.now();
-        setElapsedTime(Math.floor((now - startTime) / 1000));
+        setElapsedTime(Math.max(0, Math.floor((now - startTime) / 1000)));
       }, 1000);
 
       return () => clearInterval(interval);

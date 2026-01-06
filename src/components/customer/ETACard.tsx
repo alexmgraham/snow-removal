@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Clock, MapPin, Truck } from 'lucide-react';
+import { Clock, MapPin, Truck, TrendingDown, TrendingUp } from 'lucide-react';
 import type { ETAEstimate } from '@/types';
 
 interface ETACardProps {
@@ -12,18 +12,45 @@ interface ETACardProps {
 }
 
 export default function ETACard({ eta, operatorName, vehicleName }: ETACardProps) {
+  // Smooth animated display of minutes
   const [displayMinutes, setDisplayMinutes] = useState(eta.minutes);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [changeDirection, setChangeDirection] = useState<'up' | 'down' | null>(null);
+  const [showChange, setShowChange] = useState(false);
+  const prevMinutes = useRef(eta.minutes);
 
-  // Simulate countdown
+  // Animate when ETA changes
   useEffect(() => {
-    const interval = setInterval(() => {
-      setDisplayMinutes((prev) => {
-        if (prev <= 1) return eta.minutes; // Reset for demo
-        return prev - 1;
-      });
-    }, 60000); // Update every minute
-
-    return () => clearInterval(interval);
+    if (eta.minutes !== prevMinutes.current) {
+      const diff = eta.minutes - prevMinutes.current;
+      const isSignificantChange = Math.abs(diff) > 2;
+      
+      setIsUpdating(true);
+      
+      // Show direction indicator for significant changes (like priority changes)
+      if (isSignificantChange) {
+        setChangeDirection(diff < 0 ? 'down' : 'up');
+        setShowChange(true);
+      }
+      
+      // Small delay for visual feedback
+      const timeout = setTimeout(() => {
+        setDisplayMinutes(eta.minutes);
+        setIsUpdating(false);
+        prevMinutes.current = eta.minutes;
+      }, 150);
+      
+      // Hide the change indicator after a bit
+      const hideChangeTimeout = setTimeout(() => {
+        setShowChange(false);
+        setChangeDirection(null);
+      }, 2000);
+      
+      return () => {
+        clearTimeout(timeout);
+        clearTimeout(hideChangeTimeout);
+      };
+    }
   }, [eta.minutes]);
 
   const formatArrivalTime = () => {
@@ -47,8 +74,35 @@ export default function ETACard({ eta, operatorName, vehicleName }: ETACardProps
         </div>
 
         <div className="flex items-end gap-3 mb-2">
-          <span className="text-6xl font-bold tracking-tight">{displayMinutes}</span>
+          <span 
+            className={`text-6xl font-bold tracking-tight transition-all duration-300 ${
+              isUpdating ? 'scale-95 opacity-70' : 'scale-100 opacity-100'
+            } ${showChange && changeDirection === 'down' ? 'text-green-400' : ''}
+            ${showChange && changeDirection === 'up' ? 'text-amber-400' : ''}`}
+          >
+            {displayMinutes}
+          </span>
           <span className="text-2xl font-medium text-white/70 pb-2">min</span>
+          
+          {/* Change indicator for priority changes */}
+          {showChange && changeDirection && (
+            <div 
+              className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium animate-pulse
+                ${changeDirection === 'down' ? 'bg-green-500/20 text-green-400' : 'bg-amber-500/20 text-amber-400'}`}
+            >
+              {changeDirection === 'down' ? (
+                <>
+                  <TrendingDown className="w-3 h-3" />
+                  Faster
+                </>
+              ) : (
+                <>
+                  <TrendingUp className="w-3 h-3" />
+                  Slower
+                </>
+              )}
+            </div>
+          )}
         </div>
 
         <p className="text-white/60 text-sm">
@@ -73,7 +127,7 @@ export default function ETACard({ eta, operatorName, vehicleName }: ETACardProps
             <MapPin className="w-5 h-5 text-[var(--color-teal)]" />
           </div>
           <div>
-            <p className="text-sm font-medium text-[var(--color-foreground)]">
+            <p className={`text-sm font-medium text-[var(--color-foreground)] transition-opacity duration-300 ${isUpdating ? 'opacity-70' : 'opacity-100'}`}>
               {eta.distance} miles away
             </p>
             <p className="text-xs text-[var(--color-muted-foreground)]">

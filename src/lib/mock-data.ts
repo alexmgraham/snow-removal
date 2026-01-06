@@ -239,6 +239,11 @@ const formatTime = (hours: number, minutes: number): string => {
   return d.toISOString();
 };
 
+// Generate relative time from now (for realistic demos at any time of day)
+const relativeTime = (minutesAgo: number): string => {
+  return new Date(Date.now() - minutesAgo * 60 * 1000).toISOString();
+};
+
 export const mockJobs: Job[] = [
   {
     id: 'job-001',
@@ -285,7 +290,7 @@ export const mockJobs: Job[] = [
     coordinates: mockCustomers[2].coordinates,
     scheduledDate: today.toISOString().split('T')[0],
     estimatedArrival: formatTime(7, 15),
-    actualStartTime: formatTime(7, 12),
+    actualStartTime: relativeTime(8), // Started 8 minutes ago for realistic demo
     actualEndTime: null,
     estimatedDuration: 20,
     actualDuration: null,
@@ -357,7 +362,7 @@ export const mockJobs: Job[] = [
     coordinates: mockCustomers[6].coordinates,
     scheduledDate: today.toISOString().split('T')[0],
     estimatedArrival: formatTime(7, 0),
-    actualStartTime: formatTime(7, 5),
+    actualStartTime: relativeTime(12), // Started 12 minutes ago for realistic demo
     actualEndTime: null,
     estimatedDuration: 15,
     actualDuration: null,

@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import Header from '@/components/Header';
 import FleetStatsPanel from '@/components/owner/FleetStatsPanel';
 import OperatorCard from '@/components/owner/OperatorCard';
+import JobDispatchPanel from '@/components/owner/JobDispatchPanel';
 import WeatherCard from '@/components/weather/WeatherCard';
 import StormAlert from '@/components/weather/StormAlert';
 import ForecastWidget from '@/components/weather/ForecastWidget';
@@ -206,6 +207,11 @@ export default function OwnerDashboard() {
         {/* Stats Panel */}
         <div className="mb-6">
           <FleetStatsPanel stats={stats} />
+        </div>
+
+        {/* Job Dispatch Section */}
+        <div className="mb-6">
+          <JobDispatchPanel />
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">

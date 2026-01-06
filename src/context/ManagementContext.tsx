@@ -74,6 +74,11 @@ interface ManagementContextType {
   updateZone: (id: string, updates: Partial<ServiceZone>) => void;
   deleteZone: (id: string) => void;
 
+  // Job actions
+  assignJob: (jobId: string, operatorId: string | null) => void;
+  unassignJob: (jobId: string) => void;
+  getUnassignedJobs: () => Job[];
+
   // Utility
   getCustomerById: (id: string) => CustomerWithSubscription | undefined;
   getOperatorById: (id: string) => OperatorWithSchedule | undefined;
@@ -308,6 +313,25 @@ export function ManagementProvider({ children }: { children: ReactNode }) {
     return state.jobs.filter(j => j.operatorId === operatorId);
   }, [state.jobs]);
 
+  // Job actions
+  const assignJob = useCallback((jobId: string, operatorId: string | null) => {
+    setState(prev => ({
+      ...prev,
+      jobs: prev.jobs.map(j => j.id === jobId ? { ...j, operatorId } : j),
+    }));
+  }, []);
+
+  const unassignJob = useCallback((jobId: string) => {
+    setState(prev => ({
+      ...prev,
+      jobs: prev.jobs.map(j => j.id === jobId ? { ...j, operatorId: null } : j),
+    }));
+  }, []);
+
+  const getUnassignedJobs = useCallback(() => {
+    return state.jobs.filter(j => !j.operatorId && j.status !== 'completed' && j.status !== 'cancelled');
+  }, [state.jobs]);
+
   const value: ManagementContextType = {
     customers: state.customers,
     operators: state.operators,
@@ -329,6 +353,9 @@ export function ManagementProvider({ children }: { children: ReactNode }) {
     addZone,
     updateZone,
     deleteZone,
+    assignJob,
+    unassignJob,
+    getUnassignedJobs,
     getCustomerById,
     getOperatorById,
     getZoneById,

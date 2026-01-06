@@ -82,9 +82,9 @@ export default function NotificationCenter({ onNotificationClick }: Notification
           />
 
           {/* Panel */}
-          <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-[var(--color-card)] glass border border-[var(--color-border)] rounded-xl shadow-xl z-50 overflow-hidden">
+          <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 border border-[var(--color-border)] rounded-xl shadow-xl z-50 overflow-hidden">
             {/* Header */}
-            <div className="flex items-center justify-between p-3 border-b border-[var(--color-border)]">
+            <div className="flex items-center justify-between p-3 border-b border-[var(--color-border)] bg-slate-50 dark:bg-slate-800/50">
               <div className="flex items-center gap-2">
                 <Bell className="w-4 h-4 text-[var(--color-muted-foreground)]" />
                 <span className="font-semibold">Notifications</span>
@@ -118,7 +118,7 @@ export default function NotificationCenter({ onNotificationClick }: Notification
             </div>
 
             {/* Notification List */}
-            <div className="max-h-[400px] overflow-y-auto">
+            <div className="max-h-[400px] overflow-y-auto bg-white dark:bg-slate-900">
               {notifications.length === 0 ? (
                 <div className="p-6 text-center text-[var(--color-muted-foreground)]">
                   <Bell className="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -131,7 +131,7 @@ export default function NotificationCenter({ onNotificationClick }: Notification
                       key={notification.id}
                       className={`
                         p-3 cursor-pointer transition-colors
-                        ${!notification.read ? 'bg-[var(--color-primary)]/5' : 'hover:bg-[var(--color-secondary)]/50'}
+                        ${!notification.read ? 'bg-blue-50 dark:bg-blue-950/30' : 'bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800/50'}
                       `}
                       onClick={() => handleClick(notification)}
                     >
